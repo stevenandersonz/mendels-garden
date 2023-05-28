@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Pea Traits Grid</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <h1>Mendel's Garden</h1>
+    <p>Mendel experiment:</p>
+    <ul>
+      <li>wrinkled yellow seed (ssYY)</li>
+      <li>smooth green seed (SSyy)</li>
+      <li>cross pollinated (ssYY) * (SSyy)</li>
+      <li>F1 all dihybrids (SsYy)</li>
+      <li>Self polinate F1 plants</li>
+      <li>observe result of ratio 9:3:3:1</li>
+    </ul>
+    <div class="container">
+      <form id="plant-generator">
+        <h2>Genesis Seed Generator</h2>
+        <p>All genesis seed are homozygous</p>
+        <div>
+          <label>
+            Stem:
+            <input type="radio" name="stem" value="T" checked />Tall (T)
+            <input type="radio" name="stem" value="t" />Short (t)
+          </label>
+        </div>
+
+        <div>
+          <label>
+            Seed Texture:
+            <input type="radio" name="seedTexture" value="S" checked />Smooth
+            (S) <input type="radio" name="seedTexture" value="s" />Wrinkled (s)
+          </label>
+        </div>
+
+        <div>
+          <label>
+            Seed Color:
+            <input type="radio" name="seedColor" value="Y" checked />Yellow (Y)
+            <input type="radio" name="seedColor" value="y" />Green (y)
+          </label>
+        </div>
+
+        <div>
+          <label>
+            Flower Color:
+            <input type="radio" name="flowerColor" value="P" checked />Purple
+            (P) <input type="radio" name="flowerColor" value="p" />Green (p)
+          </label>
+        </div>
+
+        <div>
+          <label>
+            Pod Color:
+            <input type="radio" name="podColor" value="G" checked />Green (G)
+            <input type="radio" name="podColor" value="g" />Yellow (g)
+          </label>
+        </div>
+        <button type="submit">Submit</button>
+      </form>
+      <div id="pea-info">
+        <h2>Pea Information</h2>
+        <p id="pea-detail"></p>
+      </div>
+    </div>
+
+    <h2>Peas Field</h2>
+    <div class="grid" id="gridContainer"></div>
+    <div class="container">
+      <form id="breeder">
+        <h2>Breed Pea Plants</h2>
+        <p>
+          You can choose to do self or cross pollinated and how many children to
+          breed.
+        </p>
+        <label for="pea-plant1">Select Pea Plant 1:</label>
+        <select id="pea-plant1">
+          <option value="-1">None</option>
+        </select>
+        <label for="pea-plant2">Select Pea Plant 2:</label>
+        <select id="pea-plant2">
+          <option value="-1">None</option>
+        </select>
+        <div>
+          <button id="btn-breed-1">1</button>
+          <button id="btn-breed-10">10</button>
+          <button id="btn-breed-100">100</button>
+          <button id="btn-breed-1000">1000</button>
+        </div>
+      </form>
+
+      <div id="results">
+        <h2>Results</h2>
+        <pre id="result"></pre>
+      </div>
+    </div>
+  </body>
+  <script src="./peapod.js"></script>
+</html>

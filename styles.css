@@ -1,0 +1,61 @@
+#breeder {
+  display: flex;
+  flex-direction: column;
+  width: 50%;
+  margin-top: 20px;
+}
+#breeder > * {
+  margin-top: 10px;
+}
+#pea-info {
+  width: 30%;
+  border: solid 2px black;
+  padding: 2rem;
+}
+#results {
+  width: 30%;
+  border: solid 2px black;
+  padding: 2rem;
+  margin-top: 20px;
+}
+.container {
+  display: flex;
+  justify-content: space-between;
+}
+select {
+  width: 100px;
+  height: 30px;
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: 2px;
+  background-color: #ccc;
+  padding: 10px;
+}
+.selected {
+  border: solid 2px blue !important;
+}
+.cell {
+  background-color: #fff;
+  border: 1px solid #999;
+  height: 80px;
+  padding: 1rem;
+}
+
+.highlight {
+  background-color: rgba(3, 243, 139, 0.673);
+}
+form {
+  border: 2px solid black;
+  padding: 2rem;
+  width: 50%;
+}
+
+button {
+  height: 30px;
+  width: 100px;
+  background-color: green;
+  color: white;
+}
