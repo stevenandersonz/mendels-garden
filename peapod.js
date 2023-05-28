@@ -17,41 +17,24 @@
     podColor: green (G), yellow (g)
 
   */
-  function calculateSingleTrait(genotype1, genotype2) {
-    let combinations = [];
-    for (let i = 0; i < 2; i++) {
-      for (let j = 0; j < 2; j++) {
-        let allele1 = genotype1[i];
-        let allele2 = genotype2[j];
-        // Ensure that the dominant allele is always first
+
+  function cross(parent1, parent2) {
+    let output = [];
+    for (let i = 0; i < parent1.length; i++) {
+      for (let j = 0; j < parent2.length; j++) {
+        let allele1 = parent1[i];
+        let allele2 = parent2[j];
         if (
           allele1.toLowerCase() === allele1 &&
           allele2.toUpperCase() === allele2
         ) {
-          combinations.push(allele2 + allele1);
+          output.push(allele2 + allele1);
         } else {
-          combinations.push(allele1 + allele2);
+          output.push(allele1 + allele2);
         }
       }
     }
-    return combinations;
-  }
-  function concatenateColumns(arr) {
-    const numRows = arr.length;
-    const numCols = arr[0].length;
-    let result = [];
-
-    for (let col = 0; col < numCols; col++) {
-      let columnConcatenation = "";
-
-      for (let row = 0; row < numRows; row++) {
-        columnConcatenation += arr[row][col];
-      }
-
-      result.push(columnConcatenation);
-    }
-
-    return result;
+    return output;
   }
   function selectItemByRatio(arr) {
     const itemsWithRatio = arr.map((item) => ({
@@ -76,9 +59,10 @@
     return itemsWithRatio[itemsWithRatio.length - 1].value;
   }
   // ParentA && ParentB only for genealogical purposes
-  function PeaPlant(phenotype = null, parentA = null, parentB = null) {
+  function PeaPlant(genotype = null, parentA = null, parentB = null) {
     this.id = plantCount++;
-    this.phenotype = phenotype;
+    this.genotype = genotype;
+    this.phenotype = `${genotype[0]}${genotype[2]}${genotype[4]}${genotype[6]}${genotype[8]}`;
     this.parentA = parentA;
     this.parentB = parentB;
     this.coord = null;
@@ -98,33 +82,34 @@
   PeaPlant.prototype = {
     // Five trait Punnett square calculator
     findGenotypes(otherPea) {
-      let results = [];
+      let output = [""];
       for (let i = 0; i < 10; i += 2) {
-        results.push(
-          calculateSingleTrait(
-            this.phenotype.slice(i, i + 2),
-            otherPea.phenotype.slice(i, i + 2)
+        output = cross(
+          output,
+          cross(
+            this.genotype.slice(i, i + 2),
+            otherPea.genotype.slice(i, i + 2)
           )
         );
       }
-      return concatenateColumns(results);
+      return output;
     },
     breed: function (otherPea) {
       let genotypes = this.findGenotypes(otherPea);
-      console.log(genotypes);
-      let phenotype = selectItemByRatio(genotypes);
-      console.log(phenotype);
-      let newPea = new PeaPlant(phenotype.split(""));
+      let genotype = selectItemByRatio(genotypes);
+      let newPea = new PeaPlant(genotype.split(""));
       return newPea;
     },
     info: function () {
       return `
-        genotype: ${this.phenotype}
+        genotype: ${this.genotype}
+        phenotype: ${this.phenotype}
+        --
         Stem: ${map2traits[this.phenotype[0]]}
-        Seed Texture: ${map2traits[this.phenotype[2]]}
-        Seed Color: ${map2traits[this.phenotype[4]]}
-        Flower Color: ${map2traits[this.phenotype[6]]}
-        Pod Color: ${map2traits[this.phenotype[8]]}
+        Seed Texture: ${map2traits[this.phenotype[1]]}
+        Seed Color: ${map2traits[this.phenotype[2]]}
+        Flower Color: ${map2traits[this.phenotype[3]]}
+        Pod Color: ${map2traits[this.phenotype[4]]}
         `;
     },
   };
@@ -163,7 +148,7 @@
 })(window);
 
 window.addEventListener("load", function () {
-  const field = new Field(2, 5);
+  const field = new Field(4, 5);
   document
     .getElementById("plant-generator")
     .addEventListener("submit", function (event) {
@@ -191,19 +176,27 @@ window.addEventListener("load", function () {
       const breedTimes = event.submitter.id.split("-")[2];
       const pea1 = field.getPea(pea1Coord);
       const pea2 = field.getPea(pea2Coord);
-      let results = {};
+      let genotypes = {};
+      let phenotypes = {};
       for (let i = 0; i < breedTimes; i++) {
         let newPea = pea1.breed(pea2);
-        let phenotype = newPea.phenotype.join("");
-        if (results[phenotype]) results[phenotype] += 1;
-        else results[phenotype] = 1;
+        let genotype = newPea.genotype.join("");
+        if (genotypes[genotype]) genotypes[genotype] += 1;
+        else genotypes[genotype] = 1;
+        if (phenotypes[newPea.phenotype]) phenotypes[newPea.phenotype] += 1;
+        else phenotypes[newPea.phenotype] = 1;
       }
-      document.getElementById("result").innerText = JSON.stringify(results);
-      Object.keys(results).forEach((phenotype) => {
-        console.log(phenotype);
-        let newPea = new PeaPlant(phenotype, pea1, pea2);
+      const result = document.getElementById("list-result");
+      result.innerHTML = "";
+      Object.keys(genotypes).forEach((genotype) => {
+        let newPea = new PeaPlant(genotype, pea1, pea2);
         let [row, col] = field.plant(newPea);
         addToInventory(row, col, newPea.phenotype);
+      });
+      Object.keys(phenotypes).forEach((phenotype) => {
+        let li = document.createElement("li");
+        li.innerText = `${phenotype}: ${phenotypes[phenotype]}`;
+        result.appendChild(li);
       });
     });
 
@@ -255,7 +248,7 @@ function addToInventory(row, col, info) {
 }
 // Create the grid
 let gridContainer = document.getElementById("gridContainer");
-for (let i = 0; i < 2; i++) {
+for (let i = 0; i < 4; i++) {
   for (let j = 0; j < 5; j++) {
     let cell = document.createElement(`div`);
     cell.id = `plant-${i}-${j}`;

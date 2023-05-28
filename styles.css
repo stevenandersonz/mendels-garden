@@ -29,7 +29,7 @@ select {
 .grid {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
-  grid-template-rows: repeat(2, 1fr);
+  grid-template-rows: repeat(4, 1fr);
   gap: 2px;
   background-color: #ccc;
   padding: 10px;
@@ -40,8 +40,8 @@ select {
 .cell {
   background-color: #fff;
   border: 1px solid #999;
-  height: 80px;
-  padding: 1rem;
+  height: 35px;
+  padding: 0.5rem;
 }
 
 .highlight {
